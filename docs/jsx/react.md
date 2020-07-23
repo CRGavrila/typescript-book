@@ -1,6 +1,10 @@
 # React JSX
 
+> [Free series of youtube videos on React / TypeScript best practices](https://www.youtube.com/watch?v=7EW67MqgJvs&list=PLYvdvJlnTOjHNayH7MukKbSJ6PueUNkkG)
+
 > [PRO Egghead course on TypeScript and React](https://egghead.io/courses/use-typescript-to-develop-react-applications)
+
+[![DesignTSX](https://raw.githubusercontent.com/basarat/typescript-book/master/images/designtsx-banner.png)](https://designtsx.com)
 
 ## Setup
 
@@ -13,7 +17,7 @@ Our [browser quickstart already sets you up to develop react applications](../qu
 
 ## HTML Tags vs. Components
 
-React can either render HTML tags (strings) or React components (classes). The JavaScript emit for these elements is different (`React.createElement('div')` vs. `React.createElement(MyComponent)`). The way this is determined is by the *case* of the *first* letter. `foo` is treated as an HTML tag and `Foo` is treated as a component.
+React can either render HTML tags (strings) or React components. The JavaScript emit for these elements is different (`React.createElement('div')` vs. `React.createElement(MyComponent)`). The way this is determined is by the *case* of the *first* letter. `foo` is treated as an HTML tag and `Foo` is treated as a component.
 
 ## Type Checking
 
@@ -147,11 +151,11 @@ const foo = <T>(x: T) => x; // ERROR : unclosed `T` tag
 **Workaround**: Use `extends` on the generic parameter to hint the compiler that it's a generic, e.g.:
 
 ```ts
-const foo = <T extends {}>(x: T) => x;
+const foo = <T extends unknown>(x: T) => x;
 ```
 
 ### React Tip: Strongly Typed Refs 
-You basically initialize a variable as a union of the ref and `null` and then initiazlie it as as callback  e.g. 
+You basically initialize a variable as a union of the ref and `null` and then initialize it as as callback  e.g. 
 
 ```ts
 class Example extends React.Component {
@@ -195,7 +199,7 @@ class FocusingInput extends React.Component<{ value: string, onChange: (value: s
 
 ### Type Assertions
 
-Use `as Foo` syntax for type assertions as we [mentioned before](./type-assertion.md#as-foo-vs-foo).
+Use `as Foo` syntax for type assertions as we [mentioned before](../types/type-assertion.md#as-foo-vs-foo).
 
 ## Default Props
 
@@ -255,4 +259,28 @@ ReactDOM.render(
   <Hello framework="React" />, // TypeScript React
   document.getElementById("root")
 );
+```
+
+## Declaring a webcomponent
+
+If you are using a web component the default React type definitions (`@types/react`) will not know about it. But you can declare it easily e.g. to declare a webcomponent called `my-awesome-slider` that takes Props `MyAwesomeSliderProps` you would: 
+
+```tsx
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'my-awesome-slider': MyAwesomeSliderProps;
+    }
+
+    interface MyAwesomeSliderProps extends React.Attributes {
+      name: string;
+    }
+  }
+}
+```
+
+Now you can use it in TSX:
+
+```tsx
+<my-awesome-slider name='amazing'/>
 ```
